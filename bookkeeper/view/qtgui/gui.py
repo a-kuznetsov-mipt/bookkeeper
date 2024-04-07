@@ -136,7 +136,7 @@ class MainWidget(QWidget):
         self.table_budgets.verticalHeader().setSectionResizeMode(
             QHeaderView.Stretch)  # type: ignore[attr-defined]
         self._layout.addWidget(self.table_budgets, 3, 0, 1, 3)
-        self._layout.addWidget(QLabel('Сумма'), 4, 0, 1, 1)
+        self._layout.addWidget(QLabel('Сумма расходов'), 4, 0, 1, 1)
         self._layout.addWidget(QLabel('Категория'), 5, 0, 1, 1)
         self._layout.addWidget(QLineEdit(), 4, 1, 1, 1)
         self._layout.addWidget(QComboBox(), 5, 1, 1, 1)
