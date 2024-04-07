@@ -61,7 +61,7 @@ class MainWindow(QMainWindow):
 
     Класс реализует паттерн синглтон.
     """
-    signal_budgets_updated = PySide6.QtCore.Signal(list)
+    signal_budgets_updated = PySide6.QtCore.Signal(list, list)
     signal_categories_updated = PySide6.QtCore.Signal(list)
     signal_expenses_updated = PySide6.QtCore.Signal(list, list)
 
@@ -160,5 +160,11 @@ class MainWidget(QWidget):
             self.table_expenses.setItem(
                 i, 3, QTableWidgetItem(str(expense.comment)))
 
-    def update_table_budgets(self, budgets: list[Budget]):
+    def update_table_budgets(self, budgets: list[Budget], expenses_sums: list[int]):
+        """
+        budgets - список бюджетов
+        expenses_sums - список сумм расходов
+            каждая сумма должна соответствовать своему бюджету
+            (т. е. посчитана за тот же период)
+        """
         ...

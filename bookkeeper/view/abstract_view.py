@@ -43,7 +43,7 @@ class AbstractView(ABC):
         ...
 
     @abstractmethod
-    def show_budgets(self, budgets: list[Budget]) -> None:
+    def show_budgets(self, budgets: list[Budget], expenses_sums: list[int]) -> None:
         """
         Ввыводит данные о бюджетах в интерфейс пользователя.
         """
