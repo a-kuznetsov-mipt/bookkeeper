@@ -1,11 +1,11 @@
 """
 Простой тестовый скрипт для терминала
 """
-from models.budget import Budget
-from models.category import Category
-from models.expense import Expense
-from repository.memory_repository import MemoryRepository
-from utils import read_tree
+from bookkeeper.models.budget import Budget
+from bookkeeper.models.category import Category
+from bookkeeper.models.expense import Expense
+from bookkeeper.repository.memory_repository import MemoryRepository
+from bookkeeper.utils import read_tree
 
 bud_repo = MemoryRepository[Budget]()
 cat_repo = MemoryRepository[Category]()
