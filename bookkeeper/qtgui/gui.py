@@ -64,7 +64,8 @@ class MainWidget(QWidget):
 
         self.layout.addWidget(QLabel('Последние расходы'), 0, 0, 1, 3)
         table_last_expenses = QTableWidget(10, 4)
-        table_last_expenses.setHorizontalHeaderLabels(['Дата', 'Сумма', 'Категория', 'Комметарий'])
+        table_last_expenses.setHorizontalHeaderLabels(
+            ['Дата', 'Сумма', 'Категория', 'Комметарий'])
         table_last_expenses.horizontalHeader().setStretchLastSection(True)
         table_last_expenses.verticalHeader().setVisible(False)
         self.layout.addWidget(table_last_expenses, 1, 0, 1, 3)
