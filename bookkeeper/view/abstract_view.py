@@ -29,7 +29,7 @@ class AbstractView(ABC):
         """
 
     @abstractmethod
-    def show_expenses(self, expenses: list[Expense]) -> None:
+    def show_expenses(self, expenses: list[Expense], categories: list[Category]) -> None:
         """
         Ввыводит данные о расходах в интерфейс пользователя.
         """

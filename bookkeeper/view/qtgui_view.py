@@ -21,15 +21,15 @@ class QtGUIView(AbstractView):
             categories: list[Category],
             expenses: list[Expense],
     ) -> None:
-        self.show_expenses(expenses)
+        self.show_expenses(expenses, categories)
         self.show_budgets(budgets)
 
     def run(self) -> None:
         self.application.show_main_window()
         self.application.exec()
 
-    def show_expenses(self, expenses: list[Expense]) -> None:
-        self.main_window.signal_expenses_updated.emit(expenses)
+    def show_expenses(self, expenses: list[Expense], categories: list[Category]) -> None:
+        self.main_window.signal_expenses_updated.emit(expenses, categories)
 
     def show_categories(self, categories: list[Category]) -> None:
         self.main_window.signal_categories_updated.emit(categories)
