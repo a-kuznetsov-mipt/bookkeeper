@@ -1,12 +1,13 @@
 """
 Простой тестовый скрипт для терминала
 """
+from models.budget import Budget
+from models.category import Category
+from models.expense import Expense
+from repository.memory_repository import MemoryRepository
+from utils import read_tree
 
-from bookkeeper.models.category import Category
-from bookkeeper.models.expense import Expense
-from bookkeeper.repository.memory_repository import MemoryRepository
-from bookkeeper.utils import read_tree
-
+bud_repo = MemoryRepository[Budget]()
 cat_repo = MemoryRepository[Category]()
 exp_repo = MemoryRepository[Expense]()
 
@@ -33,6 +34,8 @@ while True:
         print(*cat_repo.get_all(), sep='\n')
     elif cmd == 'расходы':
         print(*exp_repo.get_all(), sep='\n')
+    elif cmd == 'бюджет':
+        print(*bud_repo.get_all(), sep='\n')
     elif cmd[0].isdecimal():
         amount, name = cmd.split(maxsplit=1)
         try:
