@@ -16,6 +16,8 @@ from PySide6.QtWidgets import (
     QHeaderView,
 )
 
+from bookkeeper import settings
+
 
 class MainWindow(QMainWindow):
     """
@@ -27,10 +29,10 @@ class MainWindow(QMainWindow):
     """
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
-        geometry = 200, 100, 750, 790
+        geometry = settings.PYSIDE6_MAIN_WINDOW_GEOMETRY
         *_, width, height = geometry
         self.setGeometry(*geometry)
-        self.setWindowTitle('The Bookkeeper App')
+        self.setWindowTitle(settings.PYSIDE6_MAIN_WINDOW_TITLE)
         self.setCentralWidget(MainWidget())
         self.setFixedSize(width, height)
 

@@ -7,6 +7,7 @@ from typing import Sequence
 
 from PySide6.QtWidgets import QApplication
 
+from bookkeeper import settings
 from bookkeeper.qtgui.gui import MainWindow
 
 
@@ -20,7 +21,7 @@ class Application(QApplication):
     def __init__(self, argv: Sequence[str] = None) -> None:
         super().__init__(argv)
         main_font = self.font()
-        main_font.setPointSize(14)
+        main_font.setPointSize(settings.PYSIDE6_MAIN_FONT_SIZE)
         self.setFont(main_font)
         self.main_window = MainWindow()
         self.main_window.show()
