@@ -8,7 +8,7 @@ from typing import Sequence
 from PySide6.QtWidgets import QApplication
 
 from bookkeeper import settings
-from bookkeeper.qtgui.gui import MainWindow
+from bookkeeper.view.qtgui.gui import MainWindow
 
 
 class Application:
