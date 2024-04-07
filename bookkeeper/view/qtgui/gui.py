@@ -147,6 +147,12 @@ class MainWidget(QWidget):
         main_window.signal_budgets_updated.connect(self.update_table_budgets)
 
     def update_table_expenses(self, expenses: list[Expense], categories: list[Category]):
+        """
+        expenses - список расходов, которые нужно отбразить в таблице.
+        categories - список категорий. При этом нужно чтобы каждому расходу
+            соответствовала категория из categories.
+        """
+        self.table_expenses.setRowCount(0)
         for i, expense in enumerate(expenses):
             expense: Expense
             self.table_expenses.setItem(
