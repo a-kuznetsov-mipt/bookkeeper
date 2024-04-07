@@ -2,7 +2,7 @@
 В данном модуле будут описаны виджеты, используемые в графическом интерфейсе.
 """
 
-from typing import Optional
+from typing import Optional, Sequence
 
 from PySide6.QtWidgets import (
     QMainWindow,
@@ -13,10 +13,40 @@ from PySide6.QtWidgets import (
     QComboBox,
     QPushButton,
     QTableWidget,
-    QHeaderView,
+    QHeaderView, QApplication,
 )
 
 from bookkeeper import settings
+
+
+class Application:
+    """
+    Класс, содержащий в себе объект приложения Qt и объект главного окна.
+    """
+
+    def __init__(self, argv: Sequence[str] | None = None) -> None:
+        """
+        argv - аргументы коммандной строки.
+        """
+        self.app = QApplication(argv)
+        main_font = self.app.font()
+        main_font.setPointSize(settings.PYSIDE6_MAIN_FONT_SIZE)
+        self.app.setFont(main_font)
+        self.main_window = MainWindow()
+        self.main_window.show()
+
+    def show_main_window(self) -> None:
+        """
+        Отображает главное окно
+        """
+        self.main_window.show()
+
+    def exec(self) -> int:
+        """
+        Возвращает код возврата приложения Qt.
+        Этот метод нужно выполнить для запуска приложения Qt.
+        """
+        return self.app.exec()
 
 
 class MainWindow(QMainWindow):
