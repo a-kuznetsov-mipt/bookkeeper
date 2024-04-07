@@ -1,7 +1,7 @@
 """
 Вспомогательные функции
 """
-
+from datetime import datetime
 from typing import Iterable, Iterator
 
 
@@ -61,3 +61,10 @@ def read_tree(lines: Iterable[str]) -> list[tuple[str, str | None]]:
         last_name = name
         last_indent = indent
     return result
+
+
+def humanize_datetime(dt: datetime) -> str:
+    """
+    Возвращает человекопонятное представление объекта datetime.
+    """
+    return dt.strftime('%Y-%m-%d %I:%M:%S')
