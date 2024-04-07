@@ -67,18 +67,24 @@ class MainWidget(QWidget):
         table_last_expenses.setHorizontalHeaderLabels(
             ['Дата', 'Сумма', 'Категория', 'Комметарий'])
         header = table_last_expenses.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QHeaderView.Stretch)
+        header.setSectionResizeMode(
+            0, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
+        header.setSectionResizeMode(
+            1, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
+        header.setSectionResizeMode(
+            2, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
+        header.setSectionResizeMode(
+            3, QHeaderView.Stretch)  # type: ignore[attr-defined]
         table_last_expenses.verticalHeader().setVisible(False)
         self._layout.addWidget(table_last_expenses, 1, 0, 1, 3)
         self._layout.addWidget(QLabel('Бюджет'), 2, 0, 1, 3)
         table_budget = QTableWidget(3, 2)
         table_budget.setHorizontalHeaderLabels(['Сумма', 'Бюджет'])
         table_budget.setVerticalHeaderLabels(['День', 'Неделя', 'Месяц'])
-        table_budget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        table_budget.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        table_budget.horizontalHeader().setSectionResizeMode(
+            QHeaderView.Stretch)  # type: ignore[attr-defined]
+        table_budget.verticalHeader().setSectionResizeMode(
+            QHeaderView.Stretch)  # type: ignore[attr-defined]
         self._layout.addWidget(table_budget, 3, 0, 1, 3)
         self._layout.addWidget(QLabel('Сумма'), 4, 0, 1, 1)
         self._layout.addWidget(QLabel('Категория'), 5, 0, 1, 1)
