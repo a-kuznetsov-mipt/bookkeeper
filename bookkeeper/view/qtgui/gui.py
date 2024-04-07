@@ -1,7 +1,6 @@
 """
 В данном модуле будут описаны виджеты, используемые в графическом интерфейсе.
 """
-
 from typing import Optional, Sequence
 
 import PySide6.QtCore
@@ -14,11 +13,12 @@ from PySide6.QtWidgets import (
     QComboBox,
     QPushButton,
     QTableWidget,
-    QHeaderView, QApplication,
+    QHeaderView, QApplication, QTableWidgetItem,
 )
 
-from bookkeeper import settings
+from bookkeeper import settings, utils
 from bookkeeper.models.budget import Budget
+from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
 
 
@@ -63,7 +63,7 @@ class MainWindow(QMainWindow):
     """
     signal_budgets_updated = PySide6.QtCore.Signal(list)
     signal_categories_updated = PySide6.QtCore.Signal(list)
-    signal_expenses_updated = PySide6.QtCore.Signal(list)
+    signal_expenses_updated = PySide6.QtCore.Signal(list, list)
 
     __instance: 'MainWindow' = None
 
@@ -146,8 +146,19 @@ class MainWidget(QWidget):
         main_window.signal_expenses_updated.connect(self.update_table_expenses)
         main_window.signal_budgets_updated.connect(self.update_table_budgets)
 
-    def update_table_expenses(self, expenses: list[Expense]):
-        ...
+    def update_table_expenses(self, expenses: list[Expense], categories: list[Category]):
+        for i, expense in enumerate(expenses):
+            expense: Expense
+            self.table_expenses.setItem(
+                i, 0, QTableWidgetItem(
+                    utils.humanize_datetime(expense.expense_date)))
+            self.table_expenses.setItem(
+                i, 1, QTableWidgetItem(str(expense.amount)))
+            self.table_expenses.setItem(
+                i, 2, QTableWidgetItem(
+                    categories[expense.category].name.capitalize()))
+            self.table_expenses.setItem(
+                i, 3, QTableWidgetItem(str(expense.comment)))
 
     def update_table_budgets(self, budgets: list[Budget]):
         ...
