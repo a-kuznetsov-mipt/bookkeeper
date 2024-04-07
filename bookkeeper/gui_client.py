@@ -17,6 +17,9 @@ class Application:
     """
 
     def __init__(self, argv: Sequence[str] | None = None) -> None:
+        """
+        argv - аргументы коммандной строки.
+        """
         self.app = QApplication(argv)
         main_font = self.app.font()
         main_font.setPointSize(settings.PYSIDE6_MAIN_FONT_SIZE)
@@ -39,6 +42,9 @@ class Application:
 
 
 def main() -> None:
+    """
+    Главная функция приложения.
+    """
     app = Application(sys.argv)
     app.show_main_window()
     sys.exit(app.exec())
