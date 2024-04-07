@@ -4,6 +4,7 @@
 
 from typing import Optional, Sequence
 
+import PySide6.QtCore
 from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -17,6 +18,8 @@ from PySide6.QtWidgets import (
 )
 
 from bookkeeper import settings
+from bookkeeper.models.budget import Budget
+from bookkeeper.models.expense import Expense
 
 
 class Application:
@@ -33,7 +36,6 @@ class Application:
         main_font.setPointSize(settings.PYSIDE6_MAIN_FONT_SIZE)
         self.app.setFont(main_font)
         self.main_window = MainWindow()
-        self.main_window.show()
 
     def show_main_window(self) -> None:
         """
@@ -56,15 +58,33 @@ class MainWindow(QMainWindow):
     а так же создаётся главный вижет.
     Ни каких других виджетов, кроме главного,
     не создаётся в конструкторе этого класса напрямую
+
+    Класс реализует паттерн синглтон.
     """
+    signal_budgets_updated = PySide6.QtCore.Signal(list)
+    signal_categories_updated = PySide6.QtCore.Signal(list)
+    signal_expenses_updated = PySide6.QtCore.Signal(list)
+
+    __instance: 'MainWindow' = None
+
+    def __new__(cls, parent: Optional[QWidget] = None):
+        if cls.__instance is None:
+            cls.__instance = super().__new__(cls)
+        return cls.__instance
+
     def __init__(self, parent: Optional[QWidget] = None) -> None:
-        super().__init__(parent)
+        super().__init__()
         geometry = settings.PYSIDE6_MAIN_WINDOW_GEOMETRY
         *_, width, height = geometry
         self.setGeometry(*geometry)
         self.setWindowTitle(settings.PYSIDE6_MAIN_WINDOW_TITLE)
-        self.setCentralWidget(MainWidget())
+        self.main_widget = MainWidget()
+        self.setCentralWidget(self.main_widget)
         self.setFixedSize(width, height)
+
+    @classmethod
+    def instance(cls) -> 'MainWindow':
+        return cls.__instance
 
 
 class MainWidget(QWidget):
@@ -93,10 +113,10 @@ class MainWidget(QWidget):
             self._layout.setRowStretch(row, stretch)
 
         self._layout.addWidget(QLabel('Последние расходы'), 0, 0, 1, 3)
-        table_last_expenses = QTableWidget(10, 4)
-        table_last_expenses.setHorizontalHeaderLabels(
+        self.table_expenses = QTableWidget(10, 4)
+        self.table_expenses.setHorizontalHeaderLabels(
             ['Дата', 'Сумма', 'Категория', 'Комметарий'])
-        header = table_last_expenses.horizontalHeader()
+        header = self.table_expenses.horizontalHeader()
         header.setSectionResizeMode(
             0, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
         header.setSectionResizeMode(
@@ -105,20 +125,29 @@ class MainWidget(QWidget):
             2, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
         header.setSectionResizeMode(
             3, QHeaderView.Stretch)  # type: ignore[attr-defined]
-        table_last_expenses.verticalHeader().setVisible(False)
-        self._layout.addWidget(table_last_expenses, 1, 0, 1, 3)
+        self.table_expenses.verticalHeader().setVisible(False)
+        self._layout.addWidget(self.table_expenses, 1, 0, 1, 3)
         self._layout.addWidget(QLabel('Бюджет'), 2, 0, 1, 3)
-        table_budget = QTableWidget(3, 2)
-        table_budget.setHorizontalHeaderLabels(['Сумма', 'Бюджет'])
-        table_budget.setVerticalHeaderLabels(['День', 'Неделя', 'Месяц'])
-        table_budget.horizontalHeader().setSectionResizeMode(
+        self.table_budgets = QTableWidget(3, 2)
+        self.table_budgets.setHorizontalHeaderLabels(['Сумма', 'Бюджет'])
+        self.table_budgets.setVerticalHeaderLabels(['День', 'Неделя', 'Месяц'])
+        self.table_budgets.horizontalHeader().setSectionResizeMode(
             QHeaderView.Stretch)  # type: ignore[attr-defined]
-        table_budget.verticalHeader().setSectionResizeMode(
+        self.table_budgets.verticalHeader().setSectionResizeMode(
             QHeaderView.Stretch)  # type: ignore[attr-defined]
-        self._layout.addWidget(table_budget, 3, 0, 1, 3)
+        self._layout.addWidget(self.table_budgets, 3, 0, 1, 3)
         self._layout.addWidget(QLabel('Сумма'), 4, 0, 1, 1)
         self._layout.addWidget(QLabel('Категория'), 5, 0, 1, 1)
         self._layout.addWidget(QLineEdit(), 4, 1, 1, 1)
         self._layout.addWidget(QComboBox(), 5, 1, 1, 1)
         self._layout.addWidget(QPushButton('Добавить'), 6, 1, 1, 1)
         self._layout.addWidget(QPushButton('Редактировать'), 5, 2, 1, 1)
+        main_window = MainWindow.instance()
+        main_window.signal_expenses_updated.connect(self.update_table_expenses)
+        main_window.signal_budgets_updated.connect(self.update_table_budgets)
+
+    def update_table_expenses(self, expenses: list[Expense]):
+        ...
+
+    def update_table_budgets(self, budgets: list[Budget]):
+        ...
