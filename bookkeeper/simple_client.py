@@ -1,6 +1,13 @@
 """
 Простой тестовый скрипт для терминала
 """
+import sys
+
+import settings
+if (base_dir_str := str(settings.BASE_DIR)) not in sys.path:
+    sys.path.append(base_dir_str)
+# Это костыль, чтобы не было ошибки ModuleNotFoundError.
+
 from bookkeeper.models.budget import Budget
 from bookkeeper.models.category import Category
 from bookkeeper.models.expense import Expense
