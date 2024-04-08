@@ -169,7 +169,7 @@ class TabExpanses(QWidget):
         edit_panel_widget_layout.setRowStretch(0, 1)
         edit_panel_widget_layout.setRowStretch(1, 1)
 
-        edit_panel_widget_layout.addWidget(QLabel('№\n(для изменения)'), 0, 0, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('№\n(для обновления)'), 0, 0, 1, 1)
         edit_panel_widget_layout.addWidget(QLabel('Дата:'), 0, 1, 1, 1)
         edit_panel_widget_layout.addWidget(QLabel('Сумма:'), 0, 2, 1, 1)
         edit_panel_widget_layout.addWidget(QLabel('№ категории:'), 0, 3, 1, 1)
@@ -319,7 +319,7 @@ class TabCategories(QWidget):
         edit_panel_widget_layout.setRowStretch(0, 1)
         edit_panel_widget_layout.setRowStretch(1, 1)
 
-        edit_panel_widget_layout.addWidget(QLabel('№\n(для изменения)'), 0, 0, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('№\n(для обновления)'), 0, 0, 1, 1)
         edit_panel_widget_layout.addWidget(QLabel('Название:'), 0, 1, 1, 1)
         edit_panel_widget_layout.addWidget(QLabel('№ родителя:'), 0, 2, 1, 1)
 
@@ -475,7 +475,7 @@ class TabBudgets(QWidget):
         edit_panel_widget_layout.setRowStretch(0, 1)
         edit_panel_widget_layout.setRowStretch(1, 1)
 
-        edit_panel_widget_layout.addWidget(QLabel('№\n(для изменения)'), 0, 0, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('№\n(для обновления)'), 0, 0, 1, 1)
         edit_panel_widget_layout.addWidget(QLabel('Период:'), 0, 1, 1, 1)
         edit_panel_widget_layout.addWidget(QLabel('Сумма:'), 0, 2, 1, 1)
         edit_panel_widget_layout.addWidget(QLabel('№ категории:'), 0, 3, 1, 1)
