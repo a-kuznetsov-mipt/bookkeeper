@@ -41,6 +41,13 @@ def main() -> None:
     repository_expenses.add(Expense(category=1, amount=1714, comment='dsadsasda'))
     repository_expenses.add(Expense(category=2, amount=199914, comment='dsaw12791494'))
 
+    repository_budgets.add(Budget(period='день', amount=100, category=6))
+    repository_budgets.add(Budget(period='неделя', amount=700, category=6))
+    repository_budgets.add(Budget(period='месяц', amount=3000, category=6))
+    repository_budgets.add(Budget(period='день', amount=200, category=7))
+    repository_budgets.add(Budget(period='неделя', amount=1400, category=7))
+    repository_budgets.add(Budget(period='месяц', amount=6000, category=7))
+
     view = QtGUIView()
     bookkeeper_presenter = BookkeeperPresenter(
         repository_budgets,
