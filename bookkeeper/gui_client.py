@@ -39,8 +39,8 @@ def main() -> None:
     '''.splitlines()
 
     Category.create_from_tree(utils.read_tree(cats), repository_categories)
-    repository_expenses.add(Expense(category=1, amount=1714, comment='dsadsasda'))
-    repository_expenses.add(Expense(category=2, amount=199914, comment='dsaw12791494'))
+    repository_expenses.add(Expense(category=1, amount=1714, comment='Гречка'))
+    repository_expenses.add(Expense(category=4, amount=199914, comment='Пельмени'))
 
     repository_budgets.add(Budget(period='день', amount=100, category=6))
     repository_budgets.add(Budget(period='неделя', amount=700, category=6))
