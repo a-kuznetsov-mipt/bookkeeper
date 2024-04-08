@@ -36,8 +36,14 @@ class BookkeeperPresenter:
             self._calculate_current_budget_sums(),
             self._calculate_current_expenses_sums()
         )
+        self.view.add_handler_budget_create(self._create_budget)
+        self.view.add_handler_budget_update(self._update_budget)
         self.view.add_handler_budget_delete(self._delete_budget)
+        self.view.add_handler_category_create(self._create_category)
+        self.view.add_handler_category_update(self._update_category)
         self.view.add_handler_category_delete(self._delete_category)
+        self.view.add_handler_expense_create(self._create_expense)
+        self.view.add_handler_expense_update(self._update_expense)
         self.view.add_handler_expense_delete(self._delete_expense)
 
     def run(self) -> None:
