@@ -24,6 +24,7 @@ class QtGUIView(AbstractView):
             expenses_sums: list[int],
     ) -> None:
         self.show_expenses(expenses, categories)
+        self.show_categories(categories)
         self.show_budgets(budgets, categories)
         self.show_budget_analysis(budgets_sums, expenses_sums)
 

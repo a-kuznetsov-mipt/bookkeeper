@@ -173,6 +173,40 @@ class TabCategories(QWidget):
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
+        self._layout = QVBoxLayout()
+        self.setLayout(self._layout)
+        self.table_categories = QTableWidget(3, 3)
+        self.table_categories.setHorizontalHeaderLabels(
+            ['№', 'Название', 'Родитель'])
+        header = self.table_categories.horizontalHeader()
+        header.setSectionResizeMode(
+            0, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
+        header.setSectionResizeMode(
+            1, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
+        header.setSectionResizeMode(
+            2, QHeaderView.Stretch)  # type: ignore[attr-defined]
+        self.table_categories.verticalHeader().setVisible(False)
+        self._layout.addWidget(self.table_categories)
+        main_window = MainWindow.instance()
+        main_window.signal_categories_updated.connect(self.update_table_categories)
+
+    def update_table_categories(
+            self, categories: list[Category]):
+        """
+        categories - список категорий расходов
+        """
+        self.table_categories.setRowCount(len(categories))
+        for i, category in enumerate(categories):
+            self.table_categories.setItem(
+                i, 0, QTableWidgetItem(str(category.pk)))
+            self.table_categories.setItem(
+                i, 1, QTableWidgetItem(category.name))
+            parent_category_name = (
+                'родителя нет' if category.parent is None
+                else categories[category.parent - 1].name
+            )
+            self.table_categories.setItem(
+                i, 2, QTableWidgetItem(parent_category_name))
 
 
 class TabBudgets(QWidget):
