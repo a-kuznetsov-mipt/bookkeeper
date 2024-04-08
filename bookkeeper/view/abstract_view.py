@@ -14,6 +14,8 @@ class AbstractView(ABC):
             budgets: list[Budget],
             categories: list[Category],
             expenses: list[Expense],
+            budgets_sums: list[int],
+            expenses_sums: list[int],
     ) -> None:
         """
         Выводит данные из репозиториев в начале работы программы.
@@ -50,7 +52,7 @@ class AbstractView(ABC):
         ...
 
     @abstractmethod
-    def show_budget_analysis(self, budgets: list[Budget], expenses_sums: list[int]) -> None:
+    def show_budget_analysis(self, budgets_sums: list[int], expenses_sums: list[int]) -> None:
         """
         Ввыводит данные об анализе бюджета в интерфейс пользователя.
         """
