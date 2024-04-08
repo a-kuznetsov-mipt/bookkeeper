@@ -124,9 +124,9 @@ class TabExpanses(QWidget):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self._layout = QVBoxLayout()
-        self.table_expenses = QTableWidget(10, 4)
+        self.table_expenses = QTableWidget(10, 5)
         self.table_expenses.setHorizontalHeaderLabels(
-            ['Дата', 'Сумма', 'Категория', 'Комметарий'])
+            ['№', 'Дата', 'Сумма', 'Категория', 'Комметарий'])
         header = self.table_expenses.horizontalHeader()
         header.setSectionResizeMode(
             0, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
@@ -135,7 +135,9 @@ class TabExpanses(QWidget):
         header.setSectionResizeMode(
             2, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
         header.setSectionResizeMode(
-            3, QHeaderView.Stretch)  # type: ignore[attr-defined]
+            3, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
+        header.setSectionResizeMode(
+            4, QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_expenses.verticalHeader().setVisible(False)
         self._layout.addWidget(self.table_expenses)
         self.setLayout(self._layout)
@@ -151,15 +153,17 @@ class TabExpanses(QWidget):
         self.table_expenses.setRowCount(len(expenses))
         for i, expense in enumerate(expenses):
             self.table_expenses.setItem(
-                i, 0, QTableWidgetItem(
+                i, 0, QTableWidgetItem(str(expense.pk)))
+            self.table_expenses.setItem(
+                i, 1, QTableWidgetItem(
                     utils.humanize_datetime(expense.expense_date)))
             self.table_expenses.setItem(
-                i, 1, QTableWidgetItem(str(expense.amount)))
+                i, 2, QTableWidgetItem(str(expense.amount)))
             self.table_expenses.setItem(
-                i, 2, QTableWidgetItem(
+                i, 3, QTableWidgetItem(
                     categories[expense.category - 1].name.capitalize()))
             self.table_expenses.setItem(
-                i, 3, QTableWidgetItem(str(expense.comment)))
+                i, 4, QTableWidgetItem(str(expense.comment)))
 
 
 class TabCategories(QWidget):
@@ -180,9 +184,9 @@ class TabBudgets(QWidget):
         super().__init__(parent)
         self._layout = QVBoxLayout()
         self.setLayout(self._layout)
-        self.table_budgets = QTableWidget(3, 3)
+        self.table_budgets = QTableWidget(3, 4)
         self.table_budgets.setHorizontalHeaderLabels(
-            ['Срок', 'Катория', 'Сумма'])
+            ['№', 'Срок', 'Катория', 'Сумма'])
         self.table_budgets.horizontalHeader().setSectionResizeMode(
             QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_budgets.verticalHeader().setSectionResizeMode(
@@ -204,11 +208,13 @@ class TabBudgets(QWidget):
             budgets_sum: int
             expenses_sum: int
             self.table_budgets.setItem(
-                i, 0, QTableWidgetItem(budget.period))
+                i, 0, QTableWidgetItem(str(budget.pk)))
             self.table_budgets.setItem(
-                i, 1, QTableWidgetItem(categories[budget.category - 1].name))
+                i, 1, QTableWidgetItem(budget.period))
             self.table_budgets.setItem(
-                i, 2, QTableWidgetItem(str(budget.amount)))
+                i, 2, QTableWidgetItem(categories[budget.category - 1].name))
+            self.table_budgets.setItem(
+                i, 3, QTableWidgetItem(str(budget.amount)))
 
 
 class TabBudgetAnalysis(QWidget):
