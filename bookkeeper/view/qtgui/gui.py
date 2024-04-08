@@ -136,7 +136,9 @@ class TabExpanses(QWidget):
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
-        self._layout = QVBoxLayout()
+        self._layout = QGridLayout()
+        self._layout.setRowStretch(0, 3)
+        self._layout.setRowStretch(1, 1)
         self.setLayout(self._layout)
         self.table_expenses = QTableWidget(10, 5)
         self.table_expenses.setHorizontalHeaderLabels(
@@ -153,7 +155,7 @@ class TabExpanses(QWidget):
         header.setSectionResizeMode(
             4, QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_expenses.verticalHeader().setVisible(False)
-        self._layout.addWidget(self.table_expenses)
+        self._layout.addWidget(self.table_expenses, 0, 0)
 
         edit_panel_widget = QWidget()
         edit_panel_widget_layout = QGridLayout()
@@ -170,7 +172,7 @@ class TabExpanses(QWidget):
         button_delete_expense = QPushButton('Удалить по №')
         button_delete_expense.clicked.connect(self.button_delete_expense_on_click)
         edit_panel_widget_layout.addWidget(button_delete_expense, 1, 3, 1, 1)
-        self._layout.addWidget(edit_panel_widget)
+        self._layout.addWidget(edit_panel_widget, 1, 0)
 
         self.main_window = MainWindow.instance()
         self.main_window.signal_expenses_updated.connect(self.update_table_expenses)
@@ -221,7 +223,9 @@ class TabCategories(QWidget):
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
-        self._layout = QVBoxLayout()
+        self._layout = QGridLayout()
+        self._layout.setRowStretch(0, 3)
+        self._layout.setRowStretch(1, 1)
         self.setLayout(self._layout)
         self.table_categories = QTableWidget(3, 3)
         self.table_categories.setHorizontalHeaderLabels(
@@ -251,7 +255,7 @@ class TabCategories(QWidget):
         button_delete_expense = QPushButton('Удалить по №')
         button_delete_expense.clicked.connect(self.button_delete_category_on_click)
         edit_panel_widget_layout.addWidget(button_delete_expense, 1, 3, 1, 1)
-        self._layout.addWidget(edit_panel_widget)
+        self._layout.addWidget(edit_panel_widget, 1, 0)
 
         self.main_window = MainWindow.instance()
         self.main_window.signal_categories_updated.connect(self.update_table_categories)
@@ -300,7 +304,9 @@ class TabBudgets(QWidget):
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
-        self._layout = QVBoxLayout()
+        self._layout = QGridLayout()
+        self._layout.setRowStretch(0, 3)
+        self._layout.setRowStretch(1, 1)
         self.setLayout(self._layout)
         self.table_budgets = QTableWidget(3, 4)
         self.table_budgets.setHorizontalHeaderLabels(
@@ -317,7 +323,7 @@ class TabBudgets(QWidget):
         self.table_budgets.verticalHeader().setSectionResizeMode(
             QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_budgets.verticalHeader().setVisible(False)
-        self._layout.addWidget(self.table_budgets)
+        self._layout.addWidget(self.table_budgets, 0, 0)
 
         edit_panel_widget = QWidget()
         edit_panel_widget_layout = QGridLayout()
@@ -334,7 +340,7 @@ class TabBudgets(QWidget):
         button_delete_expense = QPushButton('Удалить по №')
         button_delete_expense.clicked.connect(self.button_delete_budget_on_click)
         edit_panel_widget_layout.addWidget(button_delete_expense, 1, 3, 1, 1)
-        self._layout.addWidget(edit_panel_widget)
+        self._layout.addWidget(edit_panel_widget, 1, 0)
 
         self.main_window = MainWindow.instance()
         self.main_window.signal_budgets_updated.connect(
