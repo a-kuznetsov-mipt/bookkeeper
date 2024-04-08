@@ -1,4 +1,5 @@
 import sys
+from typing import Callable
 
 from bookkeeper.models.budget import Budget
 from bookkeeper.models.category import Category
@@ -44,5 +45,32 @@ class QtGUIView(AbstractView):
     def show_budget_analysis(
             self, budgets_sums: list[int], expenses_sums: list[int]) -> None:
         self.main_window.signal_budget_analysis_updated.emit(budgets_sums, expenses_sums)
+
+    def add_handler_expense_create(self, handler: Callable) -> None:
+        ...
+
+    def add_handler_expense_update(self, handler: Callable) -> None:
+        ...
+
+    def add_handler_expense_delete(self, handler: Callable) -> None:
+        ...
+
+    def add_handler_budget_create(self, handler: Callable) -> None:
+        ...
+
+    def add_handler_budget_update(self, handler: Callable) -> None:
+        ...
+
+    def add_handler_budget_delete(self, handler: Callable) -> None:
+        ...
+
+    def add_handler_category_create(self, handler: Callable) -> None:
+        ...
+
+    def add_handler_category_update(self, handler: Callable) -> None:
+        ...
+
+    def add_handler_category_delete(self, handler: Callable) -> None:
+        ...
 
 

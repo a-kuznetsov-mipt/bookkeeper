@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Callable
 
 from bookkeeper.models.budget import Budget
 from bookkeeper.models.category import Category
@@ -55,5 +56,59 @@ class AbstractView(ABC):
     def show_budget_analysis(self, budgets_sums: list[int], expenses_sums: list[int]) -> None:
         """
         Ввыводит данные об анализе бюджета в интерфейс пользователя.
+        """
+        ...
+
+    def add_handler_expense_create(self, handler: Callable) -> None:
+        """
+        Добавляет обработчик запроса на создание записи о расходах.
+        """
+        ...
+
+    def add_handler_expense_update(self, handler: Callable) -> None:
+        """
+        Добавляет обработчик запроса на изменение записи о расходах.
+        """
+        ...
+
+    def add_handler_expense_delete(self, handler: Callable) -> None:
+        """
+        Добавляет обработчик запроса на удаление записи о расходах.
+        """
+        ...
+
+    def add_handler_budget_create(self, handler: Callable) -> None:
+        """
+        Добавляет обработчик запроса на создание записи о бюджете.
+        """
+        ...
+
+    def add_handler_budget_update(self, handler: Callable) -> None:
+        """
+        Добавляет обработчик запроса на изменение записи о бюджете.
+        """
+        ...
+
+    def add_handler_budget_delete(self, handler: Callable) -> None:
+        """
+        Добавляет обработчик запроса на удаление записи о бюджете.
+        """
+        ...
+
+    def add_handler_category_create(self, handler: Callable) -> None:
+        """
+        Добавляет обработчик запроса на создание записи о категории расходов
+        """
+        ...
+
+    def add_handler_category_update(self, handler: Callable) -> None:
+        """
+        Добавляет обработчик запроса на изменение записи о категории расходов
+        """
+        ...
+
+    def add_handler_category_delete(self, handler: Callable) -> None:
+        """
+        Добавляет обработчик запроса на удаление записи о категории расходов
         """
         ...
