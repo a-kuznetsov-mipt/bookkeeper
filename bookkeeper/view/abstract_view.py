@@ -59,55 +59,55 @@ class AbstractView(ABC):
         """
         ...
 
-    def add_handler_expense_create(self, handler: Callable) -> None:
+    def add_handler_expense_create(self, handler: Callable[[Expense], None]) -> None:
         """
         Добавляет обработчик запроса на создание записи о расходах.
         """
         ...
 
-    def add_handler_expense_update(self, handler: Callable) -> None:
+    def add_handler_expense_update(self, handler: Callable[[Expense], None]) -> None:
         """
         Добавляет обработчик запроса на изменение записи о расходах.
         """
         ...
 
-    def add_handler_expense_delete(self, handler: Callable) -> None:
+    def add_handler_expense_delete(self, handler: Callable[[int], None]) -> None:
         """
         Добавляет обработчик запроса на удаление записи о расходах.
         """
         ...
 
-    def add_handler_budget_create(self, handler: Callable) -> None:
+    def add_handler_budget_create(self, handler: Callable[[Budget], None]) -> None:
         """
         Добавляет обработчик запроса на создание записи о бюджете.
         """
         ...
 
-    def add_handler_budget_update(self, handler: Callable) -> None:
+    def add_handler_budget_update(self, handler: Callable[[Budget], None]) -> None:
         """
         Добавляет обработчик запроса на изменение записи о бюджете.
         """
         ...
 
-    def add_handler_budget_delete(self, handler: Callable) -> None:
+    def add_handler_budget_delete(self, handler: Callable[[int], None]) -> None:
         """
         Добавляет обработчик запроса на удаление записи о бюджете.
         """
         ...
 
-    def add_handler_category_create(self, handler: Callable) -> None:
+    def add_handler_category_create(self, handler: Callable[[Category], None]) -> None:
         """
         Добавляет обработчик запроса на создание записи о категории расходов
         """
         ...
 
-    def add_handler_category_update(self, handler: Callable) -> None:
+    def add_handler_category_update(self, handler: Callable[[Category], None]) -> None:
         """
         Добавляет обработчик запроса на изменение записи о категории расходов
         """
         ...
 
-    def add_handler_category_delete(self, handler: Callable) -> None:
+    def add_handler_category_delete(self, handler: Callable[[int], None]) -> None:
         """
         Добавляет обработчик запроса на удаление записи о категории расходов
         """

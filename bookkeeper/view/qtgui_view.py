@@ -46,31 +46,31 @@ class QtGUIView(AbstractView):
             self, budgets_sums: list[int], expenses_sums: list[int]) -> None:
         self.main_window.signal_budget_analysis_updated.emit(budgets_sums, expenses_sums)
 
-    def add_handler_expense_create(self, handler: Callable) -> None:
+    def add_handler_expense_create(self, handler: Callable[[Expense], None]) -> None:
         ...
 
-    def add_handler_expense_update(self, handler: Callable) -> None:
+    def add_handler_expense_update(self, handler: Callable[[Expense], None]) -> None:
         ...
 
-    def add_handler_expense_delete(self, handler: Callable) -> None:
+    def add_handler_expense_delete(self, handler: Callable[[int], None]) -> None:
         self.main_window.signal_expense_deletion_requested.connect(handler)
 
-    def add_handler_budget_create(self, handler: Callable) -> None:
+    def add_handler_budget_create(self, handler: Callable[[Budget], None]) -> None:
         ...
 
-    def add_handler_budget_update(self, handler: Callable) -> None:
+    def add_handler_budget_update(self, handler: Callable[[Budget], None]) -> None:
         ...
 
-    def add_handler_budget_delete(self, handler: Callable) -> None:
+    def add_handler_budget_delete(self, handler: Callable[[int], None]) -> None:
         ...
 
-    def add_handler_category_create(self, handler: Callable) -> None:
+    def add_handler_category_create(self, handler: Callable[[Category], None]) -> None:
         ...
 
-    def add_handler_category_update(self, handler: Callable) -> None:
+    def add_handler_category_update(self, handler: Callable[[Category], None]) -> None:
         ...
 
-    def add_handler_category_delete(self, handler: Callable) -> None:
+    def add_handler_category_delete(self, handler: Callable[[int], None]) -> None:
         ...
 
 
