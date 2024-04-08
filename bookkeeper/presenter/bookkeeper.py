@@ -36,6 +36,8 @@ class BookkeeperPresenter:
             self._calculate_current_budget_sums(),
             self._calculate_current_expenses_sums()
         )
+        self.view.add_handler_budget_delete(self._delete_budget)
+        self.view.add_handler_category_delete(self._delete_category)
         self.view.add_handler_expense_delete(self._delete_expense)
 
     def run(self) -> None:
@@ -89,11 +91,11 @@ class BookkeeperPresenter:
             expenses_sum_monthly,
         ]
 
-    def _delete_expense(self, pk: int) -> None:
+    def _update_data_in_view_wrapped(self):
         """
-        Удаляет запись о расходе по ПК.
+        Обёртка вокруг self.view.update_data_in_view...,
+        чтобы каждый раз не писать одно и то же
         """
-        self.repository_expenses.delete(pk)
         self.view.update_data_in_view(
             self.repository_budgets.get_all(),
             self.repository_categories.get_all(),
@@ -101,3 +103,24 @@ class BookkeeperPresenter:
             self._calculate_current_budget_sums(),
             self._calculate_current_expenses_sums()
         )
+
+    def _delete_expense(self, pk: int) -> None:
+        """
+        Удаляет запись о расходе по ПК.
+        """
+        self.repository_expenses.delete(pk)
+        self._update_data_in_view_wrapped()
+
+    def _delete_category(self, pk: int) -> None:
+        """
+        Удаляет запись о категории по ПК.
+        """
+        self.repository_categories.delete(pk)
+        self._update_data_in_view_wrapped()
+
+    def _delete_budget(self, pk: int) -> None:
+        """
+        Удаляет запись о бюджете по ПК.
+        """
+        self.repository_budgets.delete(pk)
+        self._update_data_in_view_wrapped()
