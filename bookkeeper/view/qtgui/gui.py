@@ -124,6 +124,7 @@ class TabExpanses(QWidget):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self._layout = QVBoxLayout()
+        self.setLayout(self._layout)
         self.table_expenses = QTableWidget(10, 5)
         self.table_expenses.setHorizontalHeaderLabels(
             ['№', 'Дата', 'Сумма', 'Категория', 'Комметарий'])
@@ -140,7 +141,6 @@ class TabExpanses(QWidget):
             4, QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_expenses.verticalHeader().setVisible(False)
         self._layout.addWidget(self.table_expenses)
-        self.setLayout(self._layout)
         main_window = MainWindow.instance()
         main_window.signal_expenses_updated.connect(self.update_table_expenses)
 
