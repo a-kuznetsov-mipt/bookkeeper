@@ -61,7 +61,7 @@ class MainWindow(QMainWindow):
     signal_categories_updated = PySide6.QtCore.Signal(list)
     signal_expenses_updated = PySide6.QtCore.Signal(list, list)
     signal_budget_analysis_updated = PySide6.QtCore.Signal(list, list)
-    signal_expense_deletation_requested = PySide6.QtCore.Signal(int)
+    signal_expense_deletion_requested = PySide6.QtCore.Signal(int)
 
     __instance: 'MainWindow' = None
 
@@ -199,7 +199,7 @@ class TabExpanses(QWidget):
         """
         Обработчика нажатия на соответствующую кнопку.
         """
-        self.main_window.signal_expense_deletation_requested.emit(
+        self.main_window.signal_expense_deletion_requested.emit(
             int(self.combo_box_delete_expense.currentText()))
 
 

@@ -53,7 +53,7 @@ class QtGUIView(AbstractView):
         ...
 
     def add_handler_expense_delete(self, handler: Callable) -> None:
-        self.main_window.signal_expense_deletation_requested.connect(handler)
+        self.main_window.signal_expense_deletion_requested.connect(handler)
 
     def add_handler_budget_create(self, handler: Callable) -> None:
         ...
