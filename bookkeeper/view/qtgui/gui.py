@@ -200,10 +200,10 @@ class TabCategories(QWidget):
             self.table_categories.setItem(
                 i, 0, QTableWidgetItem(str(category.pk)))
             self.table_categories.setItem(
-                i, 1, QTableWidgetItem(category.name))
+                i, 1, QTableWidgetItem(category.name.capitalize()))
             parent_category_name = (
                 'родителя нет' if category.parent is None
-                else categories[category.parent - 1].name
+                else categories[category.parent - 1].name.capitalize()
             )
             self.table_categories.setItem(
                 i, 2, QTableWidgetItem(parent_category_name))
@@ -251,9 +251,10 @@ class TabBudgets(QWidget):
             self.table_budgets.setItem(
                 i, 0, QTableWidgetItem(str(budget.pk)))
             self.table_budgets.setItem(
-                i, 1, QTableWidgetItem(budget.period))
+                i, 1, QTableWidgetItem(budget.period.capitalize()))
             self.table_budgets.setItem(
-                i, 2, QTableWidgetItem(categories[budget.category - 1].name))
+                i, 2, QTableWidgetItem(
+                    categories[budget.category - 1].name.capitalize()))
             self.table_budgets.setItem(
                 i, 3, QTableWidgetItem(str(budget.amount)))
 
