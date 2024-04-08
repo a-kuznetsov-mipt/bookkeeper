@@ -235,8 +235,28 @@ class TabCategories(QWidget):
             2, QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_categories.verticalHeader().setVisible(False)
         self._layout.addWidget(self.table_categories)
-        main_window = MainWindow.instance()
-        main_window.signal_categories_updated.connect(self.update_table_categories)
+
+        edit_panel_widget = QWidget()
+        edit_panel_widget_layout = QGridLayout()
+        edit_panel_widget.setLayout(edit_panel_widget_layout)
+        edit_panel_widget_layout.setColumnStretch(0, 1)
+        edit_panel_widget_layout.setColumnStretch(1, 1)
+        edit_panel_widget_layout.setColumnStretch(2, 1)
+        edit_panel_widget_layout.setColumnStretch(3, 1)
+        edit_panel_widget_layout.setRowStretch(0, 1)
+        edit_panel_widget_layout.setRowStretch(1, 1)
+
+        self.combo_box_delete_category = QComboBox()
+        edit_panel_widget_layout.addWidget(self.combo_box_delete_category, 0, 3, 1, 1)
+        button_delete_expense = QPushButton('Удалить по №')
+        button_delete_expense.clicked.connect(self.button_delete_category_on_click)
+        edit_panel_widget_layout.addWidget(button_delete_expense, 1, 3, 1, 1)
+        self._layout.addWidget(edit_panel_widget)
+
+        self.main_window = MainWindow.instance()
+        self.main_window.signal_categories_updated.connect(self.update_table_categories)
+        self.main_window.signal_categories_updated.connect(
+            self.update_combo_box_delete_category_items)
 
     def update_table_categories(
             self, categories: list[Category]):
@@ -255,6 +275,22 @@ class TabCategories(QWidget):
             )
             self.table_categories.setItem(
                 i, 2, QTableWidgetItem(parent_category_name))
+
+    def update_combo_box_delete_category_items(
+            self, categories: list[Category]) -> None:
+        """
+        Обновляет пункты меню соответствующего комбобокса.
+        """
+        self.combo_box_delete_category.clear()
+        self.combo_box_delete_category.addItems(
+            [str(category.pk) for category in categories])
+
+    def button_delete_category_on_click(self) -> None:
+        """
+        Обработчика нажатия на соответствующую кнопку.
+        """
+        self.main_window.signal_categories_deletion_requested.emit(
+            int(self.combo_box_delete_category.currentText()))
 
 
 class TabBudgets(QWidget):
@@ -282,9 +318,29 @@ class TabBudgets(QWidget):
             QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_budgets.verticalHeader().setVisible(False)
         self._layout.addWidget(self.table_budgets)
-        main_window = MainWindow.instance()
-        main_window.signal_budgets_updated.connect(
+
+        edit_panel_widget = QWidget()
+        edit_panel_widget_layout = QGridLayout()
+        edit_panel_widget.setLayout(edit_panel_widget_layout)
+        edit_panel_widget_layout.setColumnStretch(0, 1)
+        edit_panel_widget_layout.setColumnStretch(1, 1)
+        edit_panel_widget_layout.setColumnStretch(2, 1)
+        edit_panel_widget_layout.setColumnStretch(3, 1)
+        edit_panel_widget_layout.setRowStretch(0, 1)
+        edit_panel_widget_layout.setRowStretch(1, 1)
+
+        self.combo_box_delete_budget = QComboBox()
+        edit_panel_widget_layout.addWidget(self.combo_box_delete_budget, 0, 3, 1, 1)
+        button_delete_expense = QPushButton('Удалить по №')
+        button_delete_expense.clicked.connect(self.button_delete_budget_on_click)
+        edit_panel_widget_layout.addWidget(button_delete_expense, 1, 3, 1, 1)
+        self._layout.addWidget(edit_panel_widget)
+
+        self.main_window = MainWindow.instance()
+        self.main_window.signal_budgets_updated.connect(
             self.update_table_budgets)
+        self.main_window.signal_budgets_updated.connect(
+            self.update_combo_box_delete_budget_items)
 
     def update_table_budgets(
             self, budgets: list[Budget], categories: list[Category]):
@@ -305,6 +361,21 @@ class TabBudgets(QWidget):
                     categories[budget.category - 1].name.capitalize()))
             self.table_budgets.setItem(
                 i, 3, QTableWidgetItem(str(budget.amount)))
+
+    def update_combo_box_delete_budget_items(
+            self, budgets: list[Budget], categories: list[Category]) -> None:
+        """
+        Обновляет пункты меню соответствующего комбобокса.
+        """
+        self.combo_box_delete_budget.clear()
+        self.combo_box_delete_budget.addItems([str(budget.pk) for budget in budgets])
+
+    def button_delete_budget_on_click(self) -> None:
+        """
+        Обработчика нажатия на соответствующую кнопку.
+        """
+        self.main_window.signal_budget_deletion_requested.emit(
+            int(self.combo_box_delete_budget.currentText()))
 
 
 class TabBudgetAnalysis(QWidget):
