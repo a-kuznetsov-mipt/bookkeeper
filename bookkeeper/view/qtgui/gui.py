@@ -235,7 +235,7 @@ class TabBudgetAnalysis(QWidget):
             self.update_table_budget_analysis)
 
     def update_table_budget_analysis(
-            self, budgets: list[Budget], expenses_sums: list[int]):
+            self, budgets_sums: list[int], expenses_sums: list[int]):
         """
         Представление данных в этой таблице - задача ПРЕДСТАВЛЕНИЯ.
 
@@ -244,15 +244,9 @@ class TabBudgetAnalysis(QWidget):
             каждая сумма должна соответствовать своему бюджету
             (т. е. посчитана за тот же период)
         """
-        budgets_sum_dayly = sum([budget.amount
-                                 for budget in budgets
-                                 if budget.period == 'день'])
-        budgets_sum_weeky = sum([budget.amount
-                                 for budget in budgets
-                                 if budget.period == 'неделя'])
-        budgets_sum_monthly = sum([budget.amount
-                                   for budget in budgets
-                                   if budget.period == 'месяц'])
+        (budgets_sum_dayly,
+         budgets_sum_weeky,
+         budgets_sum_monthly, *_) = budgets_sums  # *_ - на всякий случай, чтобы не упало.
 
         (expenses_sum_dayly,
          expenses_sum_weekly,
