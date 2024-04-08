@@ -7,11 +7,6 @@ import PySide6.QtCore
 from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
-    QLabel,
-    QGridLayout,
-    QLineEdit,
-    QComboBox,
-    QPushButton,
     QTableWidget,
     QHeaderView, QApplication, QTableWidgetItem, QVBoxLayout, QTabWidget,
 )
@@ -64,6 +59,7 @@ class MainWindow(QMainWindow):
     signal_budgets_updated = PySide6.QtCore.Signal(list, list)
     signal_categories_updated = PySide6.QtCore.Signal(list)
     signal_expenses_updated = PySide6.QtCore.Signal(list, list)
+    signal_budget_analysis_updated = PySide6.QtCore.Signal(list, list)
 
     __instance: 'MainWindow' = None
 
@@ -161,7 +157,7 @@ class TabExpanses(QWidget):
                 i, 1, QTableWidgetItem(str(expense.amount)))
             self.table_expenses.setItem(
                 i, 2, QTableWidgetItem(
-                    categories[expense.category].name.capitalize()))
+                    categories[expense.category - 1].name.capitalize()))
             self.table_expenses.setItem(
                 i, 3, QTableWidgetItem(str(expense.comment)))
 
@@ -182,6 +178,37 @@ class TabBudgets(QWidget):
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
+        self._layout = QVBoxLayout()
+        self.setLayout(self._layout)
+        self.table_budgets = QTableWidget(3, 3)
+        self.table_budgets.setHorizontalHeaderLabels(
+            ['Срок', 'Катория', 'Сумма'])
+        self.table_budgets.horizontalHeader().setSectionResizeMode(
+            QHeaderView.Stretch)  # type: ignore[attr-defined]
+        self.table_budgets.verticalHeader().setSectionResizeMode(
+            QHeaderView.Stretch)  # type: ignore[attr-defined]
+        self.table_budgets.verticalHeader().setVisible(False)
+        self._layout.addWidget(self.table_budgets)
+        main_window = MainWindow.instance()
+        main_window.signal_budgets_updated.connect(
+            self.update_table_budgets)
+
+    def update_table_budgets(
+            self, budgets: list[Budget], categories: list[Category]):
+        """
+        budgets - список бюджетов
+        categories - список категорий расходов
+        """
+        self.table_budgets.setRowCount(len(budgets))
+        for i, budget in enumerate(budgets):
+            budgets_sum: int
+            expenses_sum: int
+            self.table_budgets.setItem(
+                i, 0, QTableWidgetItem(budget.period))
+            self.table_budgets.setItem(
+                i, 1, QTableWidgetItem(categories[budget.category - 1].name))
+            self.table_budgets.setItem(
+                i, 2, QTableWidgetItem(str(budget.amount)))
 
 
 class TabBudgetAnalysis(QWidget):
@@ -204,7 +231,8 @@ class TabBudgetAnalysis(QWidget):
             QHeaderView.Stretch)  # type: ignore[attr-defined]
         self._layout.addWidget(self.table_budget_analysis)
         main_window = MainWindow.instance()
-        main_window.signal_budgets_updated.connect(self.update_table_budget_analysis)
+        main_window.signal_budget_analysis_updated.connect(
+            self.update_table_budget_analysis)
 
     def update_table_budget_analysis(
             self, budgets: list[Budget], expenses_sums: list[int]):
