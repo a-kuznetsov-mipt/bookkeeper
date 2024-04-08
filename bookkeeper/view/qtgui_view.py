@@ -65,12 +65,12 @@ class QtGUIView(AbstractView):
         self.main_window.signal_budget_deletion_requested.connect(handler)
 
     def add_handler_category_create(self, handler: Callable[[Category], None]) -> None:
-        self.main_window.signal_categories_creation_requested.connect(handler)
+        self.main_window.signal_category_creation_requested.connect(handler)
 
     def add_handler_category_update(self, handler: Callable[[Category], None]) -> None:
-        self.main_window.signal_categories_update_requested.connect(handler)
+        self.main_window.signal_category_update_requested.connect(handler)
 
     def add_handler_category_delete(self, handler: Callable[[int], None]) -> None:
-        self.main_window.signal_categories_deletion_requested.connect(handler)
+        self.main_window.signal_category_deletion_requested.connect(handler)
 
 

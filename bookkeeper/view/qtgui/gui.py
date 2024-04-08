@@ -66,9 +66,9 @@ class MainWindow(QMainWindow):
     signal_budget_update_requested = PySide6.QtCore.Signal(Budget)
     signal_budget_deletion_requested = PySide6.QtCore.Signal(int)
 
-    signal_categories_creation_requested = PySide6.QtCore.Signal(Category)
-    signal_categories_update_requested = PySide6.QtCore.Signal(Category)
-    signal_categories_deletion_requested = PySide6.QtCore.Signal(int)
+    signal_category_creation_requested = PySide6.QtCore.Signal(Category)
+    signal_category_update_requested = PySide6.QtCore.Signal(Category)
+    signal_category_deletion_requested = PySide6.QtCore.Signal(int)
 
     signal_expense_creation_requested = PySide6.QtCore.Signal(Expense)
     signal_expense_update_requested = PySide6.QtCore.Signal(Expense)
@@ -289,7 +289,7 @@ class TabCategories(QWidget):
         """
         Обработчика нажатия на соответствующую кнопку.
         """
-        self.main_window.signal_categories_deletion_requested.emit(
+        self.main_window.signal_category_deletion_requested.emit(
             int(self.combo_box_delete_category.currentText()))
 
 
