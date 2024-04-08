@@ -61,6 +61,17 @@ class MainWindow(QMainWindow):
     signal_categories_updated = PySide6.QtCore.Signal(list)
     signal_expenses_updated = PySide6.QtCore.Signal(list, list)
     signal_budget_analysis_updated = PySide6.QtCore.Signal(list, list)
+
+    signal_budget_creation_requested = PySide6.QtCore.Signal(Budget)
+    signal_budget_update_requested = PySide6.QtCore.Signal(Budget)
+    signal_budget_deletion_requested = PySide6.QtCore.Signal(int)
+
+    signal_categories_creation_requested = PySide6.QtCore.Signal(Category)
+    signal_categories_update_requested = PySide6.QtCore.Signal(Category)
+    signal_categories_deletion_requested = PySide6.QtCore.Signal(int)
+
+    signal_expense_creation_requested = PySide6.QtCore.Signal(Expense)
+    signal_expense_update_requested = PySide6.QtCore.Signal(Expense)
     signal_expense_deletion_requested = PySide6.QtCore.Signal(int)
 
     __instance: 'MainWindow' = None
