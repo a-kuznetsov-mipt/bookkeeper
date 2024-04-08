@@ -4,12 +4,13 @@
 from typing import Optional, Sequence
 
 import PySide6.QtCore
+from PySide6.QtGui import QIntValidator
 from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
     QTableWidget,
     QHeaderView, QApplication, QTableWidgetItem, QVBoxLayout, QTabWidget, QGridLayout,
-    QComboBox, QPushButton,
+    QComboBox, QPushButton, QLineEdit, QLabel, QDateEdit, QDateTimeEdit,
 )
 
 from bookkeeper import settings, utils
@@ -164,20 +165,48 @@ class TabExpanses(QWidget):
         edit_panel_widget_layout.setColumnStretch(1, 1)
         edit_panel_widget_layout.setColumnStretch(2, 1)
         edit_panel_widget_layout.setColumnStretch(3, 1)
+        edit_panel_widget_layout.setColumnStretch(4, 1)
         edit_panel_widget_layout.setRowStretch(0, 1)
         edit_panel_widget_layout.setRowStretch(1, 1)
 
+        edit_panel_widget_layout.addWidget(QLabel('№\n(для изменения)'), 0, 0, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('Дата:'), 0, 1, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('Сумма:'), 0, 2, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('№ категории:'), 0, 3, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('Комментарий:'), 0, 4, 1, 1)
+
+        self.combo_box_pk = QComboBox()
+        self.input_datetime = QDateTimeEdit()
+        self.input_amount = NaturalNumberLineEdit()
+        self.combo_box_category = QComboBox()
+        self.input_comment = QLineEdit()
+        button_create_expense = QPushButton('Создать')
+        button_create_expense.clicked.connect(self.button_create_expense_on_click)
+        button_update_expense = QPushButton('Обновить')
+        button_update_expense.clicked.connect(self.button_update_expense_on_click)
+        edit_panel_widget_layout.addWidget(self.combo_box_pk, 1, 0, 1, 1)
+        edit_panel_widget_layout.addWidget(self.input_datetime, 1, 1, 1, 1)
+        edit_panel_widget_layout.addWidget(self.input_amount, 1, 2, 1, 1)
+        edit_panel_widget_layout.addWidget(self.combo_box_category, 1, 3, 1, 1)
+        edit_panel_widget_layout.addWidget(self.input_comment, 1, 4, 1, 1)
+        edit_panel_widget_layout.addWidget(button_create_expense, 2, 0, 1, 2)
+        edit_panel_widget_layout.addWidget(button_update_expense, 2, 2, 1, 2)
+
         self.combo_box_delete_expense = QComboBox()
-        edit_panel_widget_layout.addWidget(self.combo_box_delete_expense, 0, 3, 1, 1)
+        edit_panel_widget_layout.addWidget(self.combo_box_delete_expense, 0, 5, 1, 1)
         button_delete_expense = QPushButton('Удалить по №')
         button_delete_expense.clicked.connect(self.button_delete_expense_on_click)
-        edit_panel_widget_layout.addWidget(button_delete_expense, 1, 3, 1, 1)
+        edit_panel_widget_layout.addWidget(button_delete_expense, 1, 5, 2, 1)
         self._layout.addWidget(edit_panel_widget, 1, 0)
 
         self.main_window = MainWindow.instance()
         self.main_window.signal_expenses_updated.connect(self.update_table_expenses)
         self.main_window.signal_expenses_updated.connect(
             self.update_combo_box_delete_expense_items)
+        self.main_window.signal_expenses_updated.connect(
+            self.update_combo_box_pk)
+        self.main_window.signal_categories_updated.connect(
+            self.update_combo_box_category)
 
     def update_table_expenses(self, expenses: list[Expense], categories: list[Category]):
         """
@@ -207,6 +236,46 @@ class TabExpanses(QWidget):
         """
         self.combo_box_delete_expense.clear()
         self.combo_box_delete_expense.addItems([str(expense.pk) for expense in expenses])
+
+    def update_combo_box_pk(
+            self, expenses: list[Expense], categories: list[Category]) -> None:
+        """
+        Обновляет пункты меню соответствующего комбобокса.
+        """
+        self.combo_box_pk.clear()
+        self.combo_box_pk.addItems([str(expense.pk) for expense in expenses])
+
+    def update_combo_box_category(self, categories: list[Category]) -> None:
+        """
+        Обновляет пункты меню соответствующего комбобокса.
+        """
+        self.combo_box_category.clear()
+        self.combo_box_category.addItems([str(category.pk) for category in categories])
+
+    def button_create_expense_on_click(self) -> None:
+        """
+        Обработчика нажатия на соответствующую кнопку.
+        """
+        expense = Expense(
+            expense_date=self.input_datetime.dateTime().toPython(),
+            amount=int(self.input_amount.text()),
+            category=int(self.combo_box_category.currentText()),
+            comment=self.input_comment.text()
+        )
+        self.main_window.signal_expense_creation_requested.emit(expense)
+
+    def button_update_expense_on_click(self) -> None:
+        """
+        Обработчика нажатия на соответствующую кнопку.
+        """
+        expense = Expense(
+            pk=int(self.combo_box_pk.currentText()),
+            expense_date=self.input_datetime.dateTime().toPython(),
+            amount=int(self.input_amount.text()),
+            category=int(self.combo_box_category.currentText()),
+            comment=self.input_comment.text()
+        )
+        self.main_window.signal_expense_update_requested.emit(expense)
 
     def button_delete_expense_on_click(self) -> None:
         """
@@ -238,7 +307,7 @@ class TabCategories(QWidget):
         header.setSectionResizeMode(
             2, QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_categories.verticalHeader().setVisible(False)
-        self._layout.addWidget(self.table_categories)
+        self._layout.addWidget(self.table_categories, 0, 0)
 
         edit_panel_widget = QWidget()
         edit_panel_widget_layout = QGridLayout()
@@ -438,3 +507,31 @@ class TabBudgetAnalysis(QWidget):
                 i, 0, QTableWidgetItem(str(expenses_sum)))
             self.table_budget_analysis.setItem(
                 i, 1, QTableWidgetItem(str(budgets_sum)))
+
+
+class NaturalNumberLineEdit(QLineEdit):
+    """
+    Поле ввода, принимающее только натуральные числа.
+    """
+
+    @staticmethod
+    def is_natural(value: str) -> bool:
+        """
+        Проверяет, является ли число натуральным
+        """
+        if value == "":
+            return True
+        try:
+            x = int(value)
+            if x > 0:
+                return True
+        except ValueError:
+            return False
+
+    def __init__(self, parent: QWidget | None = None, initial_value: str = '1') -> None:
+        super().__init__(parent)
+        validator = QIntValidator()
+        validator.setBottom(1)
+        self.setValidator(validator)
+        if self.is_natural(initial_value):
+            self.setText(str(initial_value))
