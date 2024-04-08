@@ -187,8 +187,15 @@ class TabBudgets(QWidget):
         self.table_budgets = QTableWidget(3, 4)
         self.table_budgets.setHorizontalHeaderLabels(
             ['№', 'Срок', 'Катория', 'Сумма'])
-        self.table_budgets.horizontalHeader().setSectionResizeMode(
-            QHeaderView.Stretch)  # type: ignore[attr-defined]
+        header = self.table_budgets.horizontalHeader()
+        header.setSectionResizeMode(
+            0, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
+        header.setSectionResizeMode(
+            1, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
+        header.setSectionResizeMode(
+            2, QHeaderView.ResizeToContents)  # type: ignore[attr-defined]
+        header.setSectionResizeMode(
+            3, QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_budgets.verticalHeader().setSectionResizeMode(
             QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_budgets.verticalHeader().setVisible(False)
