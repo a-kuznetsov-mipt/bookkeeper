@@ -3,6 +3,7 @@
 чтобы работать с приложением через графический интерфейс.
 """
 import sys
+import traceback
 
 import settings
 
@@ -59,4 +60,8 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as exc:
+        print(f'Произошла ошибка ({exc}), обратитесь к разработчику:')
+        print(''.join(traceback.format_exception(exc)))
