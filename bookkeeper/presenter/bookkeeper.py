@@ -104,6 +104,20 @@ class BookkeeperPresenter:
             self._calculate_current_expenses_sums()
         )
 
+    def _create_expense(self, expense: Expense) -> None:
+        """
+        Создаёт запись о расходе.
+        """
+        self.repository_expenses.add(expense)
+        self._update_data_in_view_wrapped()
+
+    def _update_expense(self, expense: Expense) -> None:
+        """
+        Обноваляет запись о расходе.
+        """
+        self.repository_expenses.update(expense)
+        self._update_data_in_view_wrapped()
+
     def _delete_expense(self, pk: int) -> None:
         """
         Удаляет запись о расходе по ПК.
@@ -111,11 +125,39 @@ class BookkeeperPresenter:
         self.repository_expenses.delete(pk)
         self._update_data_in_view_wrapped()
 
+    def _create_category(self, category: Category) -> None:
+        """
+        Создаёт запись о категории.
+        """
+        self.repository_categories.add(category)
+        self._update_data_in_view_wrapped()
+
+    def _update_category(self, category: Category) -> None:
+        """
+        Обновляет запись о категории.
+        """
+        self.repository_categories.update(category)
+        self._update_data_in_view_wrapped()
+
     def _delete_category(self, pk: int) -> None:
         """
         Удаляет запись о категории по ПК.
         """
         self.repository_categories.delete(pk)
+        self._update_data_in_view_wrapped()
+
+    def _create_budget(self, budget: Budget) -> None:
+        """
+        Создаёт запись о бюджете.
+        """
+        self.repository_budgets.add(budget)
+        self._update_data_in_view_wrapped()
+
+    def _update_budget(self, budget: Budget) -> None:
+        """
+        Обновляет запись о бюджете.
+        """
+        self.repository_budgets.update(budget)
         self._update_data_in_view_wrapped()
 
     def _delete_budget(self, pk: int) -> None:
