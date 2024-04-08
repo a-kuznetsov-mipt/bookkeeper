@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
     QComboBox,
     QPushButton,
     QTableWidget,
-    QHeaderView, QApplication, QTableWidgetItem,
+    QHeaderView, QApplication, QTableWidgetItem, QVBoxLayout, QTabWidget,
 )
 
 from bookkeeper import settings, utils
@@ -105,14 +105,29 @@ class MainWidget(QWidget):
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
-        self._layout = QGridLayout(self)
+        self._layout = QVBoxLayout(self)
+        self.tab_widget = QTabWidget(self)
         self.setLayout(self._layout)
-        for column, stretch in enumerate(self.LAYOUT_COLUMN_STRETCHES):
-            self._layout.setColumnStretch(column, stretch)
-        for row, stretch in enumerate(self.LAYOUT_ROW_STRETCHES):
-            self._layout.setRowStretch(row, stretch)
+        tab_tuples = [
+            (TabExpanses(self), "Последние расходы"),
+            (TabCategories(self), "Категории расходов"),
+            (TabBudgets(self), "Бюджеты"),
+            (TabBudgetAnalysis(self), "Анализ бюджета"),
+        ]
+        for tab_widget, tab_title in tab_tuples:
+            self.tab_widget.addTab(tab_widget, tab_title)
 
-        self._layout.addWidget(QLabel('Последние расходы'), 0, 0, 1, 3)
+        self._layout.addWidget(self.tab_widget)
+
+
+class TabExpanses(QWidget):
+    """
+    Вкладка для отображнения и управления записями о расходах.
+    """
+
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+        self._layout = QVBoxLayout()
         self.table_expenses = QTableWidget(10, 4)
         self.table_expenses.setHorizontalHeaderLabels(
             ['Дата', 'Сумма', 'Категория', 'Комметарий'])
@@ -126,25 +141,10 @@ class MainWidget(QWidget):
         header.setSectionResizeMode(
             3, QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_expenses.verticalHeader().setVisible(False)
-        self._layout.addWidget(self.table_expenses, 1, 0, 1, 3)
-        self._layout.addWidget(QLabel('Бюджет'), 2, 0, 1, 3)
-        self.table_budgets = QTableWidget(3, 2)
-        self.table_budgets.setHorizontalHeaderLabels(['Сумма', 'Бюджет'])
-        self.table_budgets.setVerticalHeaderLabels(['День', 'Неделя', 'Месяц'])
-        self.table_budgets.horizontalHeader().setSectionResizeMode(
-            QHeaderView.Stretch)  # type: ignore[attr-defined]
-        self.table_budgets.verticalHeader().setSectionResizeMode(
-            QHeaderView.Stretch)  # type: ignore[attr-defined]
-        self._layout.addWidget(self.table_budgets, 3, 0, 1, 3)
-        self._layout.addWidget(QLabel('Сумма расходов'), 4, 0, 1, 1)
-        self._layout.addWidget(QLabel('Категория'), 5, 0, 1, 1)
-        self._layout.addWidget(QLineEdit(), 4, 1, 1, 1)
-        self._layout.addWidget(QComboBox(), 5, 1, 1, 1)
-        self._layout.addWidget(QPushButton('Добавить'), 6, 1, 1, 1)
-        self._layout.addWidget(QPushButton('Редактировать'), 5, 2, 1, 1)
+        self._layout.addWidget(self.table_expenses)
+        self.setLayout(self._layout)
         main_window = MainWindow.instance()
         main_window.signal_expenses_updated.connect(self.update_table_expenses)
-        main_window.signal_budgets_updated.connect(self.update_table_budgets)
 
     def update_table_expenses(self, expenses: list[Expense], categories: list[Category]):
         """
@@ -152,9 +152,8 @@ class MainWidget(QWidget):
         categories - список категорий. При этом нужно чтобы каждому расходу
             соответствовала категория из categories.
         """
-        self.table_expenses.setRowCount(0)
+        self.table_expenses.setRowCount(len(expenses))
         for i, expense in enumerate(expenses):
-            expense: Expense
             self.table_expenses.setItem(
                 i, 0, QTableWidgetItem(
                     utils.humanize_datetime(expense.expense_date)))
@@ -166,11 +165,81 @@ class MainWidget(QWidget):
             self.table_expenses.setItem(
                 i, 3, QTableWidgetItem(str(expense.comment)))
 
-    def update_table_budgets(self, budgets: list[Budget], expenses_sums: list[int]):
+
+class TabCategories(QWidget):
+    """
+    Вкладка для отображнения и управления записями о категориях расходов.
+    """
+
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+
+
+class TabBudgets(QWidget):
+    """
+    Вкладка для отображнения и управления записями о бюджетах
+    """
+
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+
+
+class TabBudgetAnalysis(QWidget):
+    """
+    Вкладка для анализа бюджета.
+
+    Представление данных в этой вкладке - задача ПРЕДСТАВЛЕНИЯ.
+    """
+
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+        self._layout = QVBoxLayout()
+        self.setLayout(self._layout)
+        self.table_budget_analysis = QTableWidget(3, 2)
+        self.table_budget_analysis.setHorizontalHeaderLabels(['Сумма', 'Бюджет'])
+        self.table_budget_analysis.setVerticalHeaderLabels(['День', 'Неделя', 'Месяц'])
+        self.table_budget_analysis.horizontalHeader().setSectionResizeMode(
+            QHeaderView.Stretch)  # type: ignore[attr-defined]
+        self.table_budget_analysis.verticalHeader().setSectionResizeMode(
+            QHeaderView.Stretch)  # type: ignore[attr-defined]
+        self._layout.addWidget(self.table_budget_analysis)
+        main_window = MainWindow.instance()
+        main_window.signal_budgets_updated.connect(self.update_table_budget_analysis)
+
+    def update_table_budget_analysis(
+            self, budgets: list[Budget], expenses_sums: list[int]):
         """
+        Представление данных в этой таблице - задача ПРЕДСТАВЛЕНИЯ.
+
         budgets - список бюджетов
         expenses_sums - список сумм расходов
             каждая сумма должна соответствовать своему бюджету
             (т. е. посчитана за тот же период)
         """
-        ...
+        budgets_sum_dayly = sum([budget.amount
+                                 for budget in budgets
+                                 if budget.period == 'день'])
+        budgets_sum_weeky = sum([budget.amount
+                                 for budget in budgets
+                                 if budget.period == 'неделя'])
+        budgets_sum_monthly = sum([budget.amount
+                                   for budget in budgets
+                                   if budget.period == 'месяц'])
+
+        (expenses_sum_dayly,
+         expenses_sum_weekly,
+         expenses_sum_monthly, *_) = expenses_sums
+
+        expenses_and_budget_sums = [
+            [expenses_sum_dayly, budgets_sum_dayly],
+            [expenses_sum_weekly, budgets_sum_weeky],
+            [expenses_sum_monthly, budgets_sum_monthly],
+        ]
+
+        for i, (expenses_sum, budgets_sum) in enumerate(expenses_and_budget_sums):
+            budgets_sum: int
+            expenses_sum: int
+            self.table_budget_analysis.setItem(
+                i, 0, QTableWidgetItem(str(expenses_sum)))
+            self.table_budget_analysis.setItem(
+                i, 1, QTableWidgetItem(str(budgets_sum)))
