@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QTableWidget,
     QHeaderView, QApplication, QTableWidgetItem, QVBoxLayout, QTabWidget, QGridLayout,
-    QComboBox, QPushButton, QLineEdit, QLabel, QDateEdit, QDateTimeEdit,
+    QComboBox, QPushButton, QLineEdit, QLabel, QDateTimeEdit,
 )
 
 from bookkeeper import settings, utils
@@ -319,6 +319,23 @@ class TabCategories(QWidget):
         edit_panel_widget_layout.setRowStretch(0, 1)
         edit_panel_widget_layout.setRowStretch(1, 1)
 
+        edit_panel_widget_layout.addWidget(QLabel('№\n(для изменения)'), 0, 0, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('Название:'), 0, 1, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('№ родителя:'), 0, 2, 1, 1)
+
+        self.combo_box_pk = QComboBox()
+        self.input_name = QLineEdit()
+        self.combo_box_parent = QComboBox()
+        button_create_category = QPushButton('Создать')
+        button_create_category.clicked.connect(self.button_create_category_on_click)
+        button_update_category = QPushButton('Обновить')
+        button_update_category.clicked.connect(self.button_update_category_on_click)
+        edit_panel_widget_layout.addWidget(self.combo_box_pk, 1, 0, 1, 1)
+        edit_panel_widget_layout.addWidget(self.input_name, 1, 1, 1, 1)
+        edit_panel_widget_layout.addWidget(self.combo_box_parent, 1, 2, 1, 1)
+        edit_panel_widget_layout.addWidget(button_create_category, 2, 0, 1, 2)
+        edit_panel_widget_layout.addWidget(button_update_category, 2, 2, 1, 2)
+
         self.combo_box_delete_category = QComboBox()
         edit_panel_widget_layout.addWidget(self.combo_box_delete_category, 0, 3, 1, 1)
         button_delete_expense = QPushButton('Удалить по №')
@@ -330,6 +347,10 @@ class TabCategories(QWidget):
         self.main_window.signal_categories_updated.connect(self.update_table_categories)
         self.main_window.signal_categories_updated.connect(
             self.update_combo_box_delete_category_items)
+        self.main_window.signal_categories_updated.connect(
+            self.update_combo_box_pk)
+        self.main_window.signal_categories_updated.connect(
+            self.update_combo_box_parent)
 
     def update_table_categories(
             self, categories: list[Category]):
@@ -349,6 +370,21 @@ class TabCategories(QWidget):
             self.table_categories.setItem(
                 i, 2, QTableWidgetItem(parent_category_name))
 
+    def update_combo_box_pk(
+            self, categories: list[Category]) -> None:
+        """
+        Обновляет пункты меню соответствующего комбобокса.
+        """
+        self.combo_box_pk.clear()
+        self.combo_box_pk.addItems([str(category.pk) for category in categories])
+
+    def update_combo_box_parent(self, categories: list[Category]) -> None:
+        """
+        Обновляет пункты меню соответствующего комбобокса.
+        """
+        self.combo_box_parent.clear()
+        self.combo_box_parent.addItems([str(category.pk) for category in categories])
+
     def update_combo_box_delete_category_items(
             self, categories: list[Category]) -> None:
         """
@@ -364,6 +400,41 @@ class TabCategories(QWidget):
         """
         self.main_window.signal_category_deletion_requested.emit(
             int(self.combo_box_delete_category.currentText()))
+
+    def button_create_category_on_click(self) -> None:
+        """
+        Обработчика нажатия на соответствующую кнопку.
+        """
+
+        parent_pk_str = self.combo_box_parent.currentText()
+        if not parent_pk_str:
+            parent = None
+        else:
+            parent = int(parent_pk_str)
+
+        category = Category(
+            name=self.input_name.text(),
+            parent=parent
+        )
+        self.main_window.signal_category_creation_requested.emit(category)
+
+    def button_update_category_on_click(self) -> None:
+        """
+        Обработчика нажатия на соответствующую кнопку.
+        """
+
+        parent_pk_str = self.combo_box_parent.currentText()
+        if not parent_pk_str:
+            parent = None
+        else:
+            parent = int(parent_pk_str)
+
+        category = Category(
+            pk=int(self.combo_box_pk.currentText()),
+            name=self.input_name.text(),
+            parent=parent
+        )
+        self.main_window.signal_category_update_requested.emit(category)
 
 
 class TabBudgets(QWidget):
@@ -404,11 +475,32 @@ class TabBudgets(QWidget):
         edit_panel_widget_layout.setRowStretch(0, 1)
         edit_panel_widget_layout.setRowStretch(1, 1)
 
+        edit_panel_widget_layout.addWidget(QLabel('№\n(для изменения)'), 0, 0, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('Период:'), 0, 1, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('Сумма:'), 0, 2, 1, 1)
+        edit_panel_widget_layout.addWidget(QLabel('№ категории:'), 0, 3, 1, 1)
+
+        self.combo_box_pk = QComboBox()
+        self.combo_box_period = QComboBox()
+        self.combo_box_period.addItems(['День', 'Неделя', 'Месяц'])
+        self.input_amount = NaturalNumberLineEdit()
+        self.combo_box_category = QComboBox()
+        button_create_budget = QPushButton('Создать')
+        button_create_budget.clicked.connect(self.button_create_budget_on_click)
+        button_update_budget = QPushButton('Обновить')
+        button_update_budget.clicked.connect(self.button_update_budget_on_click)
+        edit_panel_widget_layout.addWidget(self.combo_box_pk, 1, 0, 1, 1)
+        edit_panel_widget_layout.addWidget(self.combo_box_period, 1, 1, 1, 1)
+        edit_panel_widget_layout.addWidget(self.input_amount, 1, 2, 1, 1)
+        edit_panel_widget_layout.addWidget(self.combo_box_category, 1, 3, 1, 1)
+        edit_panel_widget_layout.addWidget(button_create_budget, 2, 0, 1, 2)
+        edit_panel_widget_layout.addWidget(button_update_budget, 2, 2, 1, 2)
+
         self.combo_box_delete_budget = QComboBox()
-        edit_panel_widget_layout.addWidget(self.combo_box_delete_budget, 0, 3, 1, 1)
+        edit_panel_widget_layout.addWidget(self.combo_box_delete_budget, 0, 4, 1, 1)
         button_delete_expense = QPushButton('Удалить по №')
         button_delete_expense.clicked.connect(self.button_delete_budget_on_click)
-        edit_panel_widget_layout.addWidget(button_delete_expense, 1, 3, 1, 1)
+        edit_panel_widget_layout.addWidget(button_delete_expense, 1, 4, 1, 1)
         self._layout.addWidget(edit_panel_widget, 1, 0)
 
         self.main_window = MainWindow.instance()
@@ -416,6 +508,10 @@ class TabBudgets(QWidget):
             self.update_table_budgets)
         self.main_window.signal_budgets_updated.connect(
             self.update_combo_box_delete_budget_items)
+        self.main_window.signal_budgets_updated.connect(
+            self.update_combo_box_pk)
+        self.main_window.signal_categories_updated.connect(
+            self.update_combo_box_category)
 
     def update_table_budgets(
             self, budgets: list[Budget], categories: list[Category]):
@@ -437,6 +533,21 @@ class TabBudgets(QWidget):
             self.table_budgets.setItem(
                 i, 3, QTableWidgetItem(str(budget.amount)))
 
+    def update_combo_box_pk(
+            self, budgets: list[Budget]) -> None:
+        """
+        Обновляет пункты меню соответствующего комбобокса.
+        """
+        self.combo_box_pk.clear()
+        self.combo_box_pk.addItems([str(budget.pk) for budget in budgets])
+
+    def update_combo_box_category(self, categories: list[Category]) -> None:
+        """
+        Обновляет пункты меню соответствующего комбобокса.
+        """
+        self.combo_box_category.clear()
+        self.combo_box_category.addItems([str(category.pk) for category in categories])
+
     def update_combo_box_delete_budget_items(
             self, budgets: list[Budget], categories: list[Category]) -> None:
         """
@@ -451,6 +562,29 @@ class TabBudgets(QWidget):
         """
         self.main_window.signal_budget_deletion_requested.emit(
             int(self.combo_box_delete_budget.currentText()))
+
+    def button_create_budget_on_click(self) -> None:
+        """
+        Обработчика нажатия на соответствующую кнопку.
+        """
+        budget = Budget(
+            period=self.combo_box_period.currentText().lower(),
+            amount=int(self.input_amount.text()),
+            category=int(self.combo_box_category.currentText()),
+        )
+        self.main_window.signal_budget_creation_requested.emit(budget)
+
+    def button_update_budget_on_click(self) -> None:
+        """
+        Обработчика нажатия на соответствующую кнопку.
+        """
+        budget = Budget(
+            pk=int(self.combo_box_pk.currentText()),
+            period=self.combo_box_period.currentText(),
+            amount=int(self.input_amount.text()),
+            category=int(self.combo_box_category.currentText()),
+        )
+        self.main_window.signal_budget_update_requested.emit(budget)
 
 
 class TabBudgetAnalysis(QWidget):
