@@ -36,6 +36,7 @@ class BookkeeperPresenter:
             self._calculate_current_budget_sums(),
             self._calculate_current_expenses_sums()
         )
+        self.view.add_handler_expense_delete(self._delete_expense)
 
     def run(self) -> None:
         """
@@ -87,3 +88,16 @@ class BookkeeperPresenter:
             expenses_sum_weeky,
             expenses_sum_monthly,
         ]
+
+    def _delete_expense(self, pk: int) -> None:
+        """
+        Удаляет запись о расходе по ПК.
+        """
+        self.repository_expenses.delete(pk)
+        self.view.update_data_in_view(
+            self.repository_budgets.get_all(),
+            self.repository_categories.get_all(),
+            self.repository_expenses.get_all(),
+            self._calculate_current_budget_sums(),
+            self._calculate_current_expenses_sums()
+        )

@@ -8,7 +8,8 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
     QTableWidget,
-    QHeaderView, QApplication, QTableWidgetItem, QVBoxLayout, QTabWidget,
+    QHeaderView, QApplication, QTableWidgetItem, QVBoxLayout, QTabWidget, QGridLayout,
+    QComboBox, QPushButton,
 )
 
 from bookkeeper import settings, utils
@@ -60,6 +61,7 @@ class MainWindow(QMainWindow):
     signal_categories_updated = PySide6.QtCore.Signal(list)
     signal_expenses_updated = PySide6.QtCore.Signal(list, list)
     signal_budget_analysis_updated = PySide6.QtCore.Signal(list, list)
+    signal_expense_deletation_requested = PySide6.QtCore.Signal(int)
 
     __instance: 'MainWindow' = None
 
@@ -141,8 +143,28 @@ class TabExpanses(QWidget):
             4, QHeaderView.Stretch)  # type: ignore[attr-defined]
         self.table_expenses.verticalHeader().setVisible(False)
         self._layout.addWidget(self.table_expenses)
-        main_window = MainWindow.instance()
-        main_window.signal_expenses_updated.connect(self.update_table_expenses)
+
+        edit_panel_widget = QWidget()
+        edit_panel_widget_layout = QGridLayout()
+        edit_panel_widget.setLayout(edit_panel_widget_layout)
+        edit_panel_widget_layout.setColumnStretch(0, 1)
+        edit_panel_widget_layout.setColumnStretch(1, 1)
+        edit_panel_widget_layout.setColumnStretch(2, 1)
+        edit_panel_widget_layout.setColumnStretch(3, 1)
+        edit_panel_widget_layout.setRowStretch(0, 1)
+        edit_panel_widget_layout.setRowStretch(1, 1)
+
+        self.combo_box_delete_expense = QComboBox()
+        edit_panel_widget_layout.addWidget(self.combo_box_delete_expense, 0, 3, 1, 1)
+        button_delete_expense = QPushButton('Удалить по №')
+        button_delete_expense.clicked.connect(self.button_delete_expense_on_click)
+        edit_panel_widget_layout.addWidget(button_delete_expense, 1, 3, 1, 1)
+        self._layout.addWidget(edit_panel_widget)
+
+        self.main_window = MainWindow.instance()
+        self.main_window.signal_expenses_updated.connect(self.update_table_expenses)
+        self.main_window.signal_expenses_updated.connect(
+            self.update_combo_box_delete_expense_items)
 
     def update_table_expenses(self, expenses: list[Expense], categories: list[Category]):
         """
@@ -164,6 +186,21 @@ class TabExpanses(QWidget):
                     categories[expense.category - 1].name.capitalize()))
             self.table_expenses.setItem(
                 i, 4, QTableWidgetItem(str(expense.comment)))
+
+    def update_combo_box_delete_expense_items(
+            self, expenses: list[Expense], categories: list[Category]) -> None:
+        """
+        Обновляет пункты меню соответствующего комбобокса.
+        """
+        self.combo_box_delete_expense.clear()
+        self.combo_box_delete_expense.addItems([str(expense.pk) for expense in expenses])
+
+    def button_delete_expense_on_click(self) -> None:
+        """
+        Обработчика нажатия на соответствующую кнопку.
+        """
+        self.main_window.signal_expense_deletation_requested.emit(
+            int(self.combo_box_delete_expense.currentText()))
 
 
 class TabCategories(QWidget):
