@@ -9,7 +9,7 @@ class AbstractView(ABC):
     """
     Абстрактное представление.
     """
-    def show_initial_condition(
+    def update_data_in_view(
             self,
             budgets: list[Budget],
             categories: list[Category],

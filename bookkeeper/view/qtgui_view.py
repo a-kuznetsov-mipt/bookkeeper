@@ -15,7 +15,7 @@ class QtGUIView(AbstractView):
         self.application = Application(sys.argv)
         self.main_window = MainWindow.instance()
 
-    def show_initial_condition(
+    def update_data_in_view(
             self,
             budgets: list[Budget],
             categories: list[Category],

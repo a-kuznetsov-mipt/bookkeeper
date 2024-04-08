@@ -29,7 +29,7 @@ class BookkeeperPresenter:
         self.repository_categories = repository_categories
         self.repository_expenses = repository_expenses
         self.view = view
-        self.view.show_initial_condition(
+        self.view.update_data_in_view(
             self.repository_budgets.get_all(),
             self.repository_categories.get_all(),
             self.repository_expenses.get_all(),
